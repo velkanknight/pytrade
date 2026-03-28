@@ -1,10 +1,162 @@
-# Python Algo Trading
+# MT5 Trading API
 
-## Visão Geral
-Este repositório contém um conjunto de scripts Python para trading algorítmico usando a API MetaTrader 5. O projeto oferece diversas funcionalidades, desde a conexão com a plataforma MetaTrader 5 até a implementação de estratégias de trading automatizadas, backtesting e uso de modelos de aprendizado de máquina para previsão de mercado.
+API REST construída com **FastAPI** para expor as funcionalidades de negociação do **MetaTrader 5**, permitindo automação de estratégias via HTTP.
+
+---
 
 ## Estrutura do Projeto
-O projeto está organizado em diversos arquivos que representam diferentes funcionalidades:
+
+```
+app/
+├── main.py                   # Entrada da aplicação
+├── mt5_client.py             # Gerenciamento de conexão com MT5
+├── routers/
+│   ├── conta.py              # Informações e saldo da conta
+│   ├── ativos.py             # Consulta e coleta de dados de ativos
+│   ├── ordens.py             # Envio, fechamento e histórico de ordens
+│   └── estrategias.py        # Backtest e sinais de estratégias
+└── schemas/
+    └── models.py             # Modelos Pydantic (validação de entrada)
+```
+
+---
+
+## Pré-requisitos
+
+- Python 3.9+ instalado e adicionado ao PATH
+- MetaTrader 5 instalado e **aberto** na máquina
+- Conta demo ou real configurada no MT5
+
+---
+
+## Instalação e execução (passo a passo)
+
+### 1. Clone o repositório
+```powershell
+git clone https://github.com/velkanknight/pytrade.git
+cd pytrade
+```
+
+### 2. Crie o ambiente virtual
+```powershell
+python -m venv .venv
+```
+
+### 3. Ative o ambiente virtual
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+> ⚠️ Se receber erro de permissão no PowerShell, rode antes:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+> ```
+
+### 4. Instale as dependências
+```powershell
+pip install -r requirements.txt
+```
+
+### 5. Suba a API
+```powershell
+uvicorn app.main:app --reload
+```
+
+A API estará disponível em: `http://127.0.0.1:8000`
+
+Documentação interativa (Swagger): `http://127.0.0.1:8000/docs`
+
+---
+
+## Execuções seguintes
+
+Após a primeira instalação, basta ativar o ambiente e subir:
+```powershell
+.venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload
+```
+
+---
+
+## Endpoints
+
+### 🔑 Conta
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/conta/info` | Todas as informações da conta MT5 |
+| GET | `/conta/saldo` | Saldo, equity, margem livre |
+
+### 📊 Ativos
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/ativos/listar` | Lista todos os ativos disponíveis |
+| GET | `/ativos/{ativo}/info` | Informações detalhadas do ativo |
+| GET | `/ativos/{ativo}/tick` | Cotação em tempo real (bid/ask/last) |
+| GET | `/ativos/{ativo}/ohlc` | Dados OHLC históricos (timeframe + barras) |
+| GET | `/ativos/{ativo}/ohlc/periodo` | Dados OHLC por intervalo de datas |
+
+### 📋 Ordens
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/ordens/compra` | Enviar ordem de compra a mercado |
+| POST | `/ordens/venda` | Enviar ordem de venda a mercado |
+| POST | `/ordens/fechar` | Fechar posição aberta pelo ticket |
+| GET | `/ordens/abertas` | Listar ordens pendentes |
+| GET | `/ordens/posicoes` | Listar posições abertas |
+| GET | `/ordens/historico` | Histórico de negócios (últimos 30 dias) |
+
+### 📈 Estratégias
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/estrategias/cruzamento-media/backtest` | Backtest de cruzamento de médias móveis |
+| POST | `/estrategias/cruzamento-media/sinal` | Sinal atual da estratégia (COMPRA/VENDA) |
+
+---
+
+## Exemplos de Uso
+
+### Obter cotação em tempo real
+```
+GET /ativos/EURUSD/tick
+```
+
+### Enviar ordem de compra
+```json
+POST /ordens/compra
+{
+  "ativo": "EURUSD",
+  "quantidade": 1.0,
+  "sl": 300,
+  "tp": 300
+}
+```
+
+### Backtest de cruzamento de médias
+```json
+POST /estrategias/cruzamento-media/backtest
+{
+  "ativo": "EURUSD",
+  "sma_rapida": 43,
+  "sma_lenta": 252,
+  "barras": 2500
+}
+```
+
+---
+
+## Notas Importantes
+
+- Certifique-se de que o MetaTrader 5 esteja em execução antes de iniciar a API
+- Entenda completamente as estratégias antes de executá-las com dinheiro real
+- Sempre monitore a execução de ordens automatizadas
+
+## Aviso de Risco
+
+O trading algorítmico envolve riscos significativos. Este código é fornecido apenas para fins educacionais. O autor não se responsabiliza por perdas financeiras decorrentes do uso deste software.
+
+---
+
+## Scripts originais (referência)
 
 ### Configuração e Conexão
 - `00-initialize_mt5.py` - Inicialização básica da conexão com o MetaTrader 5
