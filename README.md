@@ -110,6 +110,11 @@ uvicorn app.main:app --reload
 |--------|------|-----------|
 | POST | `/estrategias/cruzamento-media/backtest` | Backtest de cruzamento de médias móveis |
 | POST | `/estrategias/cruzamento-media/sinal` | Sinal atual da estratégia (COMPRA/VENDA) |
+| POST | `/estrategias/magic-sale/sinal` | Sinal MACD customizado (SMA diff + WMA) |
+| POST | `/estrategias/magic-sale/historico` | Histórico de sinais Magic Sale |
+| POST | `/estrategias/engolfo/sinal` | Sinal de Engolfo + Outside Bar com filtro de 3 MAs |
+| POST | `/estrategias/engolfo/historico` | Histórico de sinais de Engolfo |
+| POST | `/estrategias/suporte-resistencia` | Níveis de suporte/resistência (pivôs + HH/LL) |
 
 ---
 

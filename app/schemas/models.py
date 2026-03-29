@@ -53,3 +53,28 @@ class BacktestRequest(BaseModel):
     sma_rapida: int = Field(43, gt=0, description="Período da média rápida")
     sma_lenta: int = Field(252, gt=0, description="Período da média lenta")
     barras: int = Field(2500, gt=0, description="Quantidade de barras históricas (D1)")
+
+
+class MagicSaleRequest(BaseModel):
+    ativo: str = Field(..., example="EURUSD")
+    timeframe: str = Field("M5", description="Timeframe: M1, M5, M15, M30, H1, H4, D1")
+    ma_fast: int = Field(1, gt=0, description="Período da SMA rápida")
+    ma_slow: int = Field(34, gt=0, description="Período da SMA lenta")
+    signal_period: int = Field(4, gt=0, description="Período da WMA do sinal")
+    barras: int = Field(500, gt=0, description="Quantidade de barras")
+
+
+class EngulfingRequest(BaseModel):
+    ativo: str = Field(..., example="EURUSD")
+    timeframe: str = Field("M5", description="Timeframe: M1, M5, M15, M30, H1, H4, D1")
+    ma_fast: int = Field(3, gt=0, description="Período da MA rápida")
+    ma_slow: int = Field(7, gt=0, description="Período da MA lenta")
+    ma_trend: int = Field(100, gt=0, description="Período da MA de tendência")
+    barras: int = Field(500, gt=0, description="Quantidade de barras")
+
+
+class SuporteResistenciaRequest(BaseModel):
+    ativo: str = Field(..., example="EURUSD")
+    timeframe: str = Field("H1", description="Timeframe: M1, M5, M15, M30, H1, H4, D1")
+    barras: int = Field(500, gt=0, description="Quantidade de barras")
+    periodos: list = Field([10, 30, 60, 100, 150, 200], description="Períodos para cálculo de suporte/resistência")
